@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+      <PublishSelfContained>true</PublishSelfContained>
+      <SelfContained>true</SelfContained>
+      <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+      <WasmBuildNative>false</WasmBuildNative>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0-rc.1.25451.107" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.12.1" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.12.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogAnalytics.Shared\LogAnalytics.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
+
+
+  <Target Name="NpmInstall" BeforeTargets="Build" Condition="!Exists('node_modules')">
+    <Exec Command="npm install" />
+  </Target>
+
+  <Target Name="TypeScriptCompile" BeforeTargets="Build" DependsOnTargets="NpmInstall">
+    <Exec Command="npm run build" />
+  </Target>
+
+</Project>

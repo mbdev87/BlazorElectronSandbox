@@ -1,28 +1,68 @@
-﻿@inherits LayoutComponentBase
+﻿@using LogAnalytics.Client.Services
+@using LogAnalytics.Shared.Services
+@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
 
-<FluentLayout>
-    <FluentHeader>
-        LogAnalytics.Client
-        <FluentSpacer />
-    </FluentHeader>
-    <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudText Typo="Typo.h6">LogAnalytics.Client</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                      Color="Color.Inherit"
+                      @onclick="ToggleTheme" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
-        <FluentBodyContent Class="body-content">
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pa-4">
             <ErrorBoundary>
                 <ChildContent>
-                    <div class="content">
-                        @Body
-                    </div>
+                    @Body
                 </ChildContent>
                 <ErrorContent Context="ex">
-                    <div class="blazor-error-boundary">@ex.Message</div>
+                    <MudAlert Severity="Severity.Error">@ex.Message</MudAlert>
                 </ErrorContent>
             </ErrorBoundary>
-        </FluentBodyContent>
-    </FluentStack>
-    <FluentFooter>
-        <a href="https://www.fluentui-blazor.net" target="_blank">Documentation and demos</a>
-        <FluentSpacer />
-        <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor" target="_blank">About Blazor</a>
-    </FluentFooter>
-</FluentLayout>
+        </MudContainer>
+
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pa-4 mt-8">
+            <MudDivider />
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mt-4">
+                <MudLink Href="https://mudblazor.com" Target="_blank">MudBlazor Documentation</MudLink>
+                <MudLink Href="https://learn.microsoft.com/en-us/aspnet/core/blazor" Target="_blank">About Blazor</MudLink>
+            </MudStack>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = true;
+    private bool _isDarkMode;
+
+    [CascadingParameter]
+    private MudThemeProvider? MudThemeProvider { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && MudThemeProvider is not null)
+        {
+            _isDarkMode = await MudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+
+    private void ToggleDrawer()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task ToggleTheme()
+    {
+        _isDarkMode = !_isDarkMode;
+        StateHasChanged();
+    }
+}

@@ -15,20 +15,24 @@
 }
 else
 {
-    <FluentDataGrid Id="weathergrid" Items="@forecasts" GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem=WeatherForecast>
-        <PropertyColumn Title="Date" Property="@(c => c!.Date)" Sortable="true" Align="Align.Start" />
-        <PropertyColumn Title="Temp. (C)" Property="@(c => c!.TemperatureC)" Sortable="true" Align="Align.Center" />
-        <PropertyColumn Title="Temp. (F)" Property="@(c => c!.TemperatureF)" Sortable="true" Align="Align.Center" />
-        <PropertyColumn Title="Summary" Property="@(c => c!.Summary)" Sortable="true" Align="Align.End" />
-    </FluentDataGrid>
+    <MudDataGrid Items="@forecastsList" SortMode="SortMode.Multiple" Filterable="true">
+        <Columns>
+            <PropertyColumn Property="x => x!.Date" Title="Date" />
+            <PropertyColumn Property="x => x!.TemperatureC" Title="Temp. (C)" />
+            <PropertyColumn Property="x => x!.TemperatureF" Title="Temp. (F)" />
+            <PropertyColumn Property="x => x!.Summary" Title="Summary" />
+        </Columns>
+    </MudDataGrid>
 }
 
 @code {
     private IQueryable<WeatherForecast>? forecasts;
+    private List<WeatherForecast>? forecastsList;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = (await Http.GetFromJsonAsync<List<WeatherForecast>>("sample-data/weather.json"))!.AsQueryable();
+        forecastsList = await Http.GetFromJsonAsync<List<WeatherForecast>>("sample-data/weather.json");
+        forecasts = forecastsList?.AsQueryable();
     }
 
     public class WeatherForecast

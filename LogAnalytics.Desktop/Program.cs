@@ -3,8 +3,10 @@ using System.IO;
 using ElectronSharp.API;
 using ElectronSharp.API.Entities;
 using LogAnalytics.Client.Services;
+using LogAnalytics.Desktop.Services;
 using LogAnalytics.Server.Services;
 using LogAnalytics.Shared;
+using LogAnalytics.Shared.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +27,9 @@ builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<IEnvironmentInfoService, ServerEnvironmentInfoService>();
+builder.Services.AddSingleton<IUserSettingsService, FileUserSettingsService>();
+builder.Services.AddSingleton<IThemeService, ServerThemeService>();
+builder.Services.AddSingleton<IRuntimeEnvironment, ElectronRuntimeEnvironment>();
 builder.Services.AddFluentUIComponents();
 
 builder.WebHost.ConfigureKestrel((context, serverOptions) =>
@@ -59,10 +64,11 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAntiforgery();
 
+
 app.MapRazorComponents<LogAnalytics.Server.Components.App>()
         .AddInteractiveServerRenderMode()
         .AddAdditionalAssemblies(typeof(LogAnalytics.Client._Imports).Assembly);
-
+app.MapStaticAssets();
 await app.StartAsync();
 
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions

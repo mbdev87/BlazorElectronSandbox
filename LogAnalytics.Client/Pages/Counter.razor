@@ -20,9 +20,9 @@ else
 }
 
 
-<p role="status">Current count: <FluentBadge Appearance="Appearance.Neutral">@currentCount</FluentBadge></p>
+<p role="status">Current count: <MudChip T="string" Color="Color.Primary">@currentCount</MudChip></p>
 
-<FluentButton Appearance="Appearance.Accent" @onclick="IncrementCount">Click me</FluentButton>
+<MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="IncrementCount">Click me</MudButton>
 
 @code {
     private int currentCount = 0;

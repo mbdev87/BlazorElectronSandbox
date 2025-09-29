@@ -1,0 +1,72 @@
+@using Microsoft.FluentUI.AspNetCore.Components
+@inject IJSRuntime JSRuntime
+
+<FluentButton Appearance="Appearance.Stealth"
+              Title="@GetThemeTitle()"
+              OnClick="ToggleTheme">
+    @GetThemeIcon() @GetThemeText()
+</FluentButton>
+
+@code {
+    [Parameter] public DesignThemeModes Mode { get; set; }
+    [Parameter] public EventCallback<DesignThemeModes> ModeChanged { get; set; }
+
+    private async Task ToggleTheme()
+    {
+        var newMode = Mode switch
+        {
+            DesignThemeModes.Dark => DesignThemeModes.Light,
+            DesignThemeModes.Light => DesignThemeModes.Dark,
+            DesignThemeModes.System => await GetSystemTheme() ? DesignThemeModes.Light : DesignThemeModes.Dark,
+            _ => DesignThemeModes.Light
+        };
+
+        Mode = newMode;
+        await ModeChanged.InvokeAsync(Mode);
+    }
+
+    private async Task<bool> GetSystemTheme()
+    {
+        try
+        {
+            return await JSRuntime.InvokeAsync<bool>("window.matchMedia", "(prefers-color-scheme: dark)");
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private string GetThemeIcon()
+    {
+        return Mode switch
+        {
+            DesignThemeModes.Dark => "☀️",
+            DesignThemeModes.Light => "🌙",
+            DesignThemeModes.System => "💻",
+            _ => "🌙"
+        };
+    }
+
+    private string GetThemeText()
+    {
+        return Mode switch
+        {
+            DesignThemeModes.Dark => "Light",
+            DesignThemeModes.Light => "Dark",
+            DesignThemeModes.System => "System",
+            _ => "Theme"
+        };
+    }
+
+    private string GetThemeTitle()
+    {
+        return Mode switch
+        {
+            DesignThemeModes.Dark => "Switch to light theme",
+            DesignThemeModes.Light => "Switch to dark theme",
+            DesignThemeModes.System => "Switch from system theme",
+            _ => "Toggle theme"
+        };
+    }
+}

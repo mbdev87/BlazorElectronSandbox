@@ -1,0 +1,82 @@
+/* Base Fluent-inspired colors */
+:root {
+    --fluent-primary: #0078d4; /* Azure / Office Blue */
+    --fluent-primary-hover: #106ebe;
+    --fluent-primary-pressed: #005a9e;
+    --fluent-neutral-light: #f3f2f1;
+    --fluent-neutral-dark: #201f1e;
+    --fluent-border-radius: 6px; /* Fluent has softer rounding */
+}
+
+/* Override MudBlazor defaults */
+.mud-button-root {
+    border-radius: var(--fluent-border-radius);
+    font-weight: 500;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mud-button-filled.mud-primary {
+    background-color: var(--fluent-primary);
+    color: white;
+}
+.mud-button-filled.mud-primary:hover {
+    background-color: var(--fluent-primary-hover);
+}
+.mud-button-filled.mud-primary:active {
+    background-color: var(--fluent-primary-pressed);
+}
+
+/* Outlined buttons */
+.mud-button-outlined.mud-primary {
+    border-color: var(--fluent-primary);
+    color: var(--fluent-primary);
+}
+.mud-button-outlined.mud-primary:hover {
+    background-color: rgba(0,120,212,0.1);
+}
+
+/* TextFields */
+.mud-input-root {
+    border-radius: var(--fluent-border-radius);
+    border: 1px solid #c8c6c4;
+    background-color: white;
+    transition: border-color 0.2s ease;
+}
+.mud-input-root:hover {
+    border-color: var(--fluent-primary-hover);
+}
+.mud-input-root.mud-input-focused {
+    border-color: var(--fluent-primary);
+    box-shadow: 0 0 0 1px var(--fluent-primary);
+}
+
+/* Switch / Checkbox */
+.mud-switch-base.mud-checked .mud-switch-thumb {
+    background-color: var(--fluent-primary);
+}
+.mud-switch-base.mud-checked .mud-switch-track {
+    background-color: rgba(0,120,212,0.5);
+}
+.mud-checkbox.mud-checked .mud-checkbox-icon {
+    color: var(--fluent-primary);
+}
+
+/* Cards */
+.mud-card {
+    border-radius: var(--fluent-border-radius);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* AppBar */
+.mud-appbar {
+    background-color: var(--fluent-primary);
+    color: white;
+}
+
+/* Links */
+a, .mud-link {
+    color: var(--fluent-primary);
+}
+a:hover, .mud-link:hover {
+    color: var(--fluent-primary-hover);
+}

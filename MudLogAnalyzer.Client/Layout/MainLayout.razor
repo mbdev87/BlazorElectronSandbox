@@ -3,8 +3,9 @@
 
 @if (PlatformService.IsElectron)
 {
-    var drawerBg = "#252423";
-    var mainContentBg = _isDarkMode ? "#11100f" : "#f3f2f1";
+    var drawerBg = "#1b1a19";
+    var mainContentBg = "#1b1a19";
+    var contentBg = _isDarkMode ? "#252423" : "#ffffff";
     var appBarBg = "#1b1a19";
     var appBarText = "#ffffff";
     var drawerText = "#ffffff";
@@ -14,6 +15,11 @@
     <style>
         #nav-drawer.mud-drawer {
             background: @drawerBg !important;
+        }
+
+        .mud-navmenu {
+            border-radius: 8px;
+            margin-top: 6px !important;
         }
 
         #nav-drawer .mud-navmenu .mud-nav-link,
@@ -27,11 +33,11 @@
         }
 
         #nav-drawer .mud-navmenu .mud-nav-link:hover {
-            background-color: #1b1a19 !important;
+            background-color: rgba(255, 255, 255, 0.08) !important;
         }
 
         #nav-drawer .mud-navmenu .mud-nav-link.active {
-            background-color: #1b1a19 !important;
+            background-color: #252423 !important;
         }
 
         .mud-main-content {
@@ -42,7 +48,7 @@
         }
 
         .content-container {
-            background: @(_isDarkMode ? "#1b1a19" : "#ffffff") !important;
+            background: @contentBg !important;
             border-radius: 8px;
             padding: 16px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -66,7 +72,7 @@
         *::-webkit-scrollbar-thumb:hover {
             background: @(_isDarkMode ? "#605e5c" : "#a19f9d");
         }
-        
+
         .mud-appbar {
             background: @appBarBg !important;
             -webkit-app-region: drag !important;
@@ -126,8 +132,7 @@
 
 
 @code {
-    [Parameter]
-    public string Title { get; set; } = "MudLogAnalyzer";
+    [Parameter] public string Title { get; set; } = "MudLogAnalyzer";
 
     private async Task MinimizeWindow()
     {
@@ -143,27 +148,30 @@
     {
         await JS.InvokeVoidAsync("electronWindowControl", "close");
     }
+
 }
 
 
-<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
 <MudLayout>
- 
-    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Variant="DrawerVariant.Persistent" Elevation="2">
+
+    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never"
+               Variant="DrawerVariant.Persistent" Elevation="2">
         <CascadingValue Value="_isDarkMode">
-            <NavMenu OnDarkModeToggle="@DarkModeToggle" />
+            <NavMenu OnDarkModeToggle="@DarkModeToggle"/>
         </CascadingValue>
     </MudDrawer>
-    
+
     <MudMainContent>
         <MudAppBar Elevation="1">
-            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                           OnClick="@((e) => DrawerToggle())"/>
             <MudText Typo="Typo.h6" Class="ml-3">Application</MudText>
-            <MudSpacer />
+            <MudSpacer/>
         </MudAppBar>
 
         <div class="content-container">
@@ -237,52 +245,52 @@
 
     private readonly PaletteLight _lightPalette = new()
     {
-            Primary = "#0078d4",              // Fluent / Office Blue
-            Secondary = "#2b88d8",
-            Black = "#201f1e",
-            AppbarText = "#323130",
-            AppbarBackground = "#ffffff",
-            DrawerBackground = "#ffffff",
-            Background = "#f3f2f1",           // Fluent neutral light
-            Surface = "#ffffff",
-            TextPrimary = "#201f1e",
-            TextSecondary = "#605e5c",
-            GrayLight = "#edebe9",
-            GrayLighter = "#faf9f8",
-            Info = "#0178d4",
-            Success = "#107c10",
-            Warning = "#ffb900",
-            Error = "#d13438",
+        Primary = "#0078d4", // Fluent / Office Blue
+        Secondary = "#2b88d8",
+        Black = "#201f1e",
+        AppbarText = "#323130",
+        AppbarBackground = "#ffffff",
+        DrawerBackground = "#ffffff",
+        Background = "#f3f2f1", // Fluent neutral light
+        Surface = "#ffffff",
+        TextPrimary = "#201f1e",
+        TextSecondary = "#605e5c",
+        GrayLight = "#edebe9",
+        GrayLighter = "#faf9f8",
+        Info = "#0178d4",
+        Success = "#107c10",
+        Warning = "#ffb900",
+        Error = "#d13438",
     };
 
     private readonly PaletteDark _darkPalette = new()
     {
-            Primary = "#2899f5",              // Lighter blue for dark mode
-            Secondary = "#3aa0f3",
-            Surface = "#1b1a19",
-            Background = "#11100f",
-            BackgroundGray = "#201f1e",
-            AppbarText = "#f3f2f1",
-            AppbarBackground = "#1b1a19",
-            DrawerBackground = "#1b1a19",
-            ActionDefault = "#a19f9d",
-            ActionDisabled = "#8a88864d",
-            ActionDisabledBackground = "#3231304d",
-            TextPrimary = "#ffffff",
-            TextSecondary = "#d2d0ce",
-            TextDisabled = "#ffffff66",
-            DrawerIcon = "#d2d0ce",
-            DrawerText = "#d2d0ce",
-            GrayLight = "#323130",
-            GrayLighter = "#252423",
-            Info = "#2899f5",
-            Success = "#107c10",
-            Warning = "#fce100",
-            Error = "#d13438",
-            LinesDefault = "#3b3a39",
-            TableLines = "#3b3a39",
-            Divider = "#323130",
-            OverlayLight = "#201f1e80",
+        Primary = "#2899f5", // Lighter blue for dark mode
+        Secondary = "#3aa0f3",
+        Surface = "#1b1a19",
+        Background = "#11100f",
+        BackgroundGray = "#201f1e",
+        AppbarText = "#f3f2f1",
+        AppbarBackground = "#1b1a19",
+        DrawerBackground = "#1b1a19",
+        ActionDefault = "#a19f9d",
+        ActionDisabled = "#8a88864d",
+        ActionDisabledBackground = "#3231304d",
+        TextPrimary = "#ffffff",
+        TextSecondary = "#d2d0ce",
+        TextDisabled = "#ffffff66",
+        DrawerIcon = "#d2d0ce",
+        DrawerText = "#d2d0ce",
+        GrayLight = "#323130",
+        GrayLighter = "#252423",
+        Info = "#2899f5",
+        Success = "#107c10",
+        Warning = "#fce100",
+        Error = "#d13438",
+        LinesDefault = "#3b3a39",
+        TableLines = "#3b3a39",
+        Divider = "#323130",
+        OverlayLight = "#201f1e80",
     };
 
 
@@ -291,6 +299,7 @@
         true => Icons.Material.Rounded.AutoMode,
         false => Icons.Material.Outlined.DarkMode,
     };
+
 }
 
 

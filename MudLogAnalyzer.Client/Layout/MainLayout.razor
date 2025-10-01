@@ -3,6 +3,10 @@
 
 @if (PlatformService.IsElectron)
 {
+    var drawerBg = _isDarkMode ? "rgba(27, 26, 25, 0.8)" : "rgba(255, 255, 255, 0.8)";
+    var mainContentBg = _isDarkMode ? "#11100f" : "#f3f2f1";
+    var appBarBg = _isDarkMode ? "#1b1a19" : "#ffffff";
+
     <style>
         body {
             background: transparent !important;
@@ -13,7 +17,7 @@
         }
 
         #nav-drawer.mud-drawer {
-            background: rgba(27, 26, 25, 0.8) !important;
+            background: @drawerBg !important;
             backdrop-filter: blur(20px) !important;
             -webkit-backdrop-filter: blur(20px) !important;
         }
@@ -23,16 +27,16 @@
         }
 
         .mud-main-content {
-            background: #11100f !important;
+            background: @mainContentBg !important;
             min-height: 100vh !important;
         }
 
         .mud-appbar {
-            background: #1b1a19 !important;
+            background: @appBarBg !important;
         }
 
         main, article, [role="main"] {
-            background: #11100f !important;
+            background: @mainContentBg !important;
         }
     </style>
 }
@@ -112,6 +116,7 @@
     private void DarkModeToggle()
     {
         _isDarkMode = !_isDarkMode;
+        StateHasChanged();
     }
 
     private readonly PaletteLight _lightPalette = new()

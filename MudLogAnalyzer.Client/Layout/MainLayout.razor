@@ -3,19 +3,36 @@
 
 @if (PlatformService.IsElectron)
 {
-    var drawerBg = _isDarkMode ? "rgba(27, 26, 25, 0.8)" : "rgba(255, 255, 255, 0.8)";
+    var drawerBg = "#252423";
     var mainContentBg = _isDarkMode ? "#11100f" : "#f3f2f1";
-    var appBarBg = _isDarkMode ? "#1b1a19" : "#ffffff";
+    var appBarBg = "#1b1a19";
+    var appBarText = "#ffffff";
+    var drawerText = "#ffffff";
     var scrollbarThumb = _isDarkMode ? "#3b3a39" : "#c8c6c4";
     var scrollbarTrack = _isDarkMode ? "#201f1e" : "#edebe9";
 
     <style>
         #nav-drawer.mud-drawer {
             background: @drawerBg !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
         }
-        
+
+        #nav-drawer .mud-navmenu .mud-nav-link,
+        #nav-drawer .mud-navmenu .mud-nav-link .mud-nav-link-text {
+            color: @drawerText !important;
+        }
+
+        #nav-drawer .mud-navmenu .mud-nav-link svg,
+        #nav-drawer .mud-navmenu .mud-nav-link .mud-icon-root {
+            color: @drawerText !important;
+        }
+
+        #nav-drawer .mud-navmenu .mud-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        #nav-drawer .mud-navmenu .mud-nav-link.active {
+            background-color: rgba(255, 255, 255, 0.12) !important;
+        }
 
         .mud-main-content {
             background: @mainContentBg !important;
@@ -43,6 +60,14 @@
         .mud-appbar {
             background: @appBarBg !important;
             -webkit-app-region: drag !important;
+            color: @appBarText !important;
+            height: 48px !important;
+            min-height: 48px !important;
+        }
+
+        .mud-appbar .mud-typography,
+        .mud-appbar .mud-icon-button {
+            color: @appBarText !important;
         }
 
         .mud-appbar button,
@@ -127,7 +152,7 @@
     <MudMainContent Class="pt-16 pa-4">
         <MudAppBar Elevation="1">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-            <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+            <MudText Typo="Typo.h6" Class="ml-3">Application</MudText>
             <MudSpacer />
         </MudAppBar>
         

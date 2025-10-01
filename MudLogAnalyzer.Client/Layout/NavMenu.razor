@@ -1,6 +1,18 @@
 ﻿@inject IJSRuntime JS
 
 <div style="display: flex; flex-direction: column; height: 100%;">
+    <div style="height: 48px; min-height: 48px; background: #1b1a19; display: flex; align-items: center; padding: 0 12px;">
+        <MudTextField @bind-Value="_searchText"
+                      Placeholder="Search"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Clearable="true"
+                      Style="width: 100%; height: 32px;"
+                      Class="nav-search-box" />
+    </div>
+
     <MudNavMenu Style="flex: 1;">
         <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
@@ -8,12 +20,72 @@
         <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
     </MudNavMenu>
 
-    <div style="padding: 4px; border-top: 1px solid var(--mud-palette-divider);">
-        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" Size="Size.Small" />
+    <div style="padding: 4px; border-top: 1px solid rgba(255, 255, 255, 0.12);">
+        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Style="color: white;" OnClick="@DarkModeToggle" Size="Size.Small" />
     </div>
 </div>
 
+<style>
+    .nav-search-box {
+        height: 32px !important;
+        overflow: hidden !important;
+    }
+
+    .nav-search-box .mud-input-control {
+        min-height: 32px !important;
+        max-height: 32px !important;
+        overflow: hidden !important;
+    }
+
+    .nav-search-box .mud-input {
+        color: white !important;
+        font-size: 0.875rem;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .nav-search-box .mud-input-root {
+        padding-inline-start: 8px;
+        min-height: 32px !important;
+        max-height: 32px !important;
+    }
+
+    .nav-search-box .mud-input-slot {
+        max-height: 32px !important;
+        overflow: hidden !important;
+    }
+
+    .nav-search-box .mud-input-outlined .mud-input-root {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-search-box .mud-input-outlined:hover .mud-input-root {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-search-box .mud-input-adornment svg,
+    .nav-search-box .mud-icon-button svg {
+        color: rgba(255, 255, 255, 0.7) !important;
+        width: 18px;
+        height: 18px;
+    }
+
+    .nav-search-box .mud-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .nav-search-box fieldset {
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .nav-search-box:hover fieldset {
+        border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+</style>
+
 @code {
+    private string _searchText = "";
+
     [CascadingParameter]
     public bool IsDarkMode { get; set; }
 

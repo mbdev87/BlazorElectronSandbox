@@ -13,8 +13,8 @@
                       Class="nav-search-box" />
     </div>
 
-    <MudNavMenu Style="flex: 1;">
-        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" Style="border-top-right-radius: 8px">Home</MudNavLink>
+    <MudNavMenu Style="flex: 1;" Class="custom-nav-menu">
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
 
         <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
@@ -81,6 +81,12 @@
     .nav-search-box:hover fieldset {
         border-color: rgba(255, 255, 255, 0.3) !important;
     }
+
+    .custom-nav-menu {
+        border-top-right-radius: 8px !important;
+        overflow: hidden;
+    }
+
 </style>
 
 @code {

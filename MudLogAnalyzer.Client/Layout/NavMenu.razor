@@ -1,10 +1,35 @@
-﻿
-<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    
-    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+﻿@inject IJSRuntime JS
 
-</MudNavMenu>
+<div style="display: flex; flex-direction: column; height: 100%;">
+    <MudNavMenu Style="flex: 1;">
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
+
+        <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+    </MudNavMenu>
+
+    <div style="padding: 4px; border-top: 1px solid var(--mud-palette-divider);">
+        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" Size="Size.Small" />
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public bool IsDarkMode { get; set; }
+
+    [Parameter]
+    public EventCallback OnDarkModeToggle { get; set; }
+
+    private async Task DarkModeToggle()
+    {
+        await OnDarkModeToggle.InvokeAsync();
+    }
+
+    public string DarkLightModeButtonIcon => IsDarkMode switch
+    {
+        true => Icons.Material.Rounded.LightMode,
+        false => Icons.Material.Outlined.DarkMode,
+    };
+}
 
 

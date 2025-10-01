@@ -6,14 +6,19 @@
     var drawerBg = _isDarkMode ? "rgba(27, 26, 25, 0.8)" : "rgba(255, 255, 255, 0.8)";
     var mainContentBg = _isDarkMode ? "#11100f" : "#f3f2f1";
     var appBarBg = _isDarkMode ? "#1b1a19" : "#ffffff";
+    var scrollbarThumb = _isDarkMode ? "#3b3a39" : "#c8c6c4";
+    var scrollbarTrack = _isDarkMode ? "#201f1e" : "#edebe9";
 
     <style>
         body {
             background: transparent !important;
+            overflow: hidden !important;
         }
 
         .mud-layout {
             background: transparent !important;
+            height: 100vh !important;
+            overflow: hidden !important;
         }
 
         #nav-drawer.mud-drawer {
@@ -28,7 +33,30 @@
 
         .mud-main-content {
             background: @mainContentBg !important;
-            min-height: 100vh !important;
+            height: 100vh !important;
+            overflow-y: auto !important;
+        }
+
+        *::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: @scrollbarTrack;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: @scrollbarThumb;
+            border-radius: 6px;
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background: @(_isDarkMode ? "#605e5c" : "#a19f9d");
+        }
+
+        #nav-drawer::-webkit-scrollbar-track,
+        #nav-drawer::-webkit-scrollbar-thumb {
+            background: transparent !important;
         }
 
         .mud-appbar {

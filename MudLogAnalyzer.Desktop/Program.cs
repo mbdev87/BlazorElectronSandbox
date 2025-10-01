@@ -3,6 +3,7 @@ using ElectronSharp.API;
 using ElectronSharp.API.Entities;
 using MudBlazor.Services;
 
+var isMaximized = false;
 Electron.ReadAuth();
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseElectron(args);
@@ -93,7 +94,7 @@ var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWi
 
 });
 
-Electron.IpcMain.On("window-control", async (action) =>
+Electron.IpcMain.On("window-control", (action) =>
 {
     var command = action?.ToString();
     switch (command)
@@ -102,11 +103,17 @@ Electron.IpcMain.On("window-control", async (action) =>
             browserWindow.Minimize();
             break;
         case "maximize":
-            var isMaximized = await browserWindow.IsMaximizedAsync();
-            if (isMaximized == true)
+            Console.WriteLine($"{nameof(isMaximized)} value: {isMaximized}");
+            if (isMaximized)
+            {
                 browserWindow.Unmaximize();
+                isMaximized = false;
+            }
             else
+            {
                 browserWindow.Maximize();
+                isMaximized = true;
+            }
             break;
         case "close":
             browserWindow.Close();
@@ -122,6 +129,10 @@ else if (OperatingSystem.IsMacOS())
 {
     browserWindow.SetVibrancy(Vibrancy.underWindow);
 }
+
+
+browserWindow.OnMaximize += () => isMaximized = true;
+browserWindow.OnUnmaximize += () => isMaximized = false;
 
 browserWindow.LoadURL("http://localhost:5000");
 

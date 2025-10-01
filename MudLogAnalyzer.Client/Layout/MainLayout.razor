@@ -71,6 +71,35 @@
             -webkit-app-region: no-drag !important;
         }
 
+        .window-controls {
+            position: fixed;
+            top: 0;
+            right: 0;
+            margin: 12px;
+            z-index: 9999;
+            display: flex;
+            gap: 0;
+            -webkit-app-region: no-drag !important;
+        }
+
+        .window-controls button {
+            height: 12px;
+            width: 12px;
+            border-radius: 0;
+            margin-top: 2px;
+            margin-right: 2px;
+            margin-left: 12px;
+        }
+
+        .window-controls button:hover {
+            background-color: @(_isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)");
+        }
+
+        .window-controls button.close-btn:hover {
+            background-color: #c42b1c;
+            color: white;
+        }
+
         main, article, [role="main"] {
             background: @mainContentBg !important;
         }
@@ -109,7 +138,9 @@
 <MudLayout>
  
     <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Variant="DrawerVariant.Persistent" Elevation="2">
-        <NavMenu />
+        <CascadingValue Value="_isDarkMode">
+            <NavMenu OnDarkModeToggle="@DarkModeToggle" />
+        </CascadingValue>
     </MudDrawer>
     
     <MudMainContent Class="pt-16 pa-4">
@@ -117,18 +148,20 @@
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
             <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
             <MudSpacer />
-            <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-            <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
-            <div class="window-controls">
-                <MudIconButton OnClick="@(() => MinimizeWindow())" Icon="@Icons.Material.Filled.Minimize" Size="Size.Small" />
-                <MudIconButton OnClick="@(() => MaximizeWindow())" Icon="@Icons.Material.Filled.Maximize" Size="Size.Small" />
-                <MudIconButton OnClick="@(() => CloseWindow())" Icon="@Icons.Material.Filled.Close" Size="Size.Small" />
-            </div>
         </MudAppBar>
         
         @Body
     </MudMainContent>
 </MudLayout>
+
+@if (PlatformService.IsElectron)
+{
+    <div class="window-controls">
+        <MudIconButton OnClick="@MinimizeWindow" Icon="@Icons.Material.Outlined.Remove" Size="Size.Small" />
+        <MudIconButton OnClick="@MaximizeWindow" Icon="@Icons.Material.Outlined.CropSquare" Size="Size.Small"/>
+        <MudIconButton OnClick="@CloseWindow" Icon="@Icons.Material.Outlined.Close" Class="close-btn" Size="Size.Small"/>
+    </div>    
+}
 
 @*<div class="electron-layout">
     <div class="sidebar-acrylic">

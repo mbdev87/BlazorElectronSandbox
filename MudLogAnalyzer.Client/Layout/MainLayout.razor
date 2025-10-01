@@ -10,26 +10,12 @@
     var scrollbarTrack = _isDarkMode ? "#201f1e" : "#edebe9";
 
     <style>
-        body {
-            background: transparent !important;
-            overflow: hidden !important;
-        }
-
-        .mud-layout {
-            background: transparent !important;
-            height: 100vh !important;
-            overflow: hidden !important;
-        }
-
         #nav-drawer.mud-drawer {
             background: @drawerBg !important;
             backdrop-filter: blur(20px) !important;
             -webkit-backdrop-filter: blur(20px) !important;
         }
-
-        #nav-drawer .mud-drawer-content {
-            background-color: transparent !important;
-        }
+        
 
         .mud-main-content {
             background: @mainContentBg !important;
@@ -53,12 +39,7 @@
         *::-webkit-scrollbar-thumb:hover {
             background: @(_isDarkMode ? "#605e5c" : "#a19f9d");
         }
-
-        #nav-drawer::-webkit-scrollbar-track,
-        #nav-drawer::-webkit-scrollbar-thumb {
-            background: transparent !important;
-        }
-
+        
         .mud-appbar {
             background: @appBarBg !important;
             -webkit-app-region: drag !important;
@@ -154,14 +135,14 @@
     </MudMainContent>
 </MudLayout>
 
-@if (PlatformService.IsElectron)
+@*@if (PlatformService.IsElectron)
 {
     <div class="window-controls">
         <MudIconButton OnClick="@MinimizeWindow" Icon="@Icons.Material.Outlined.Remove" Size="Size.Small" />
         <MudIconButton OnClick="@MaximizeWindow" Icon="@Icons.Material.Outlined.CropSquare" Size="Size.Small"/>
         <MudIconButton OnClick="@CloseWindow" Icon="@Icons.Material.Outlined.Close" Class="close-btn" Size="Size.Small"/>
     </div>    
-}
+}*@
 
 @*<div class="electron-layout">
     <div class="sidebar-acrylic">

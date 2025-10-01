@@ -3,7 +3,7 @@ using ElectronSharp.API;
 using ElectronSharp.API.Entities;
 using MudBlazor.Services;
 
-var isMaximized = false;
+//var isMaximized = false;
 Electron.ReadAuth();
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseElectron(args);
@@ -81,20 +81,30 @@ var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWi
                                 WebSecurity = true,
                                 Preload = Path.Join(Directory.GetCurrentDirectory(), "wwwroot", "electron-preload.js"),
                                 ExperimentalCanvasFeatures = true,
+                        
                                 //Transparent = true
+                }, 
+                ThickFrame = true,
+                Frame = true,
+                DarkTheme = true,
+                TitleBarStyle = TitleBarStyle.hidden,
+                TitleBarOverlay = new TitleBarOverlayConfig
+                {
+                    color = "#1b1a19",
+                    symbolColor = "#ffffff"
                 },
-                Transparent = true,
-                //DarkTheme = true,
-                //TitleBarStyle = OperatingSystem.IsMacOS() ? TitleBarStyle.hiddenInset : TitleBarStyle.hidden,
-                //TitleBarOverlay = OperatingSystem.IsWindows() ? new TitleBarOverlayConfig { color = "#1b1a19", symbolColor = "#ffffff" } : null,
-                Frame = false,
-                HasShadow = true,  // enables drop shadow
+                
+                HasShadow = true,
                 AutoHideMenuBar = true,
                 Center = true,
 
 });
 
-Electron.IpcMain.On("window-control", (action) =>
+// If you want to experiment with acrylic 
+// set above                 Transparent = true,
+
+
+/*Electron.IpcMain.On("window-control", (action) =>
 {
     var command = action?.ToString();
     switch (command)
@@ -123,7 +133,7 @@ Electron.IpcMain.On("window-control", (action) =>
 
 if (OperatingSystem.IsWindows())
 {
-    browserWindow.SetBackgroundMaterial(BackgroundMaterial.acrylic);
+    Electron.NativeTheme.ThemeSource = "dark";
 }
 else if (OperatingSystem.IsMacOS())
 {
@@ -132,7 +142,7 @@ else if (OperatingSystem.IsMacOS())
 
 
 browserWindow.OnMaximize += () => isMaximized = true;
-browserWindow.OnUnmaximize += () => isMaximized = false;
+browserWindow.OnUnmaximize += () => isMaximized = false;*/
 
 browserWindow.LoadURL("http://localhost:5000");
 

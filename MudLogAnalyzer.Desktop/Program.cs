@@ -80,13 +80,14 @@ var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWi
                                 WebSecurity = true,
                                 Preload = Path.Join(Directory.GetCurrentDirectory(), "wwwroot", "electron-preload.js"),
                                 ExperimentalCanvasFeatures = true,
-                                Transparent = true
+                                //Transparent = true
                 },
                 Transparent = true,
-                DarkTheme = true,
-                TitleBarStyle = OperatingSystem.IsMacOS() ? TitleBarStyle.hiddenInset : TitleBarStyle.hidden,
-                TitleBarOverlay = OperatingSystem.IsWindows() ? new TitleBarOverlayConfig { color = "#1b1a19", symbolColor = "#ffffff" } : null,
+                //DarkTheme = true,
+                //TitleBarStyle = OperatingSystem.IsMacOS() ? TitleBarStyle.hiddenInset : TitleBarStyle.hidden,
+                //TitleBarOverlay = OperatingSystem.IsWindows() ? new TitleBarOverlayConfig { color = "#1b1a19", symbolColor = "#ffffff" } : null,
                 Frame = false,
+                HasShadow = true,  // enables drop shadow
                 AutoHideMenuBar = true,
                 Center = true,
 

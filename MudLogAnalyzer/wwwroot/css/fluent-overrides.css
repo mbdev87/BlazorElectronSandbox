@@ -8,6 +8,20 @@
     --fluent-border-radius: 6px; /* Fluent has softer rounding */
 }
 
+
+
+.sidebar-acrylic {
+    width: 250px;
+    height: 100%;
+    background: rgba(27, 26, 25, 0.2) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Override MudBlazor defaults */
 .mud-button-root {
     border-radius: var(--fluent-border-radius);
@@ -79,4 +93,124 @@ a, .mud-link {
 }
 a:hover, .mud-link:hover {
     color: var(--fluent-primary-hover);
+}
+
+
+@ -0,0 +1,45 @@
+.electron-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar-acrylic {
+    width: 250px;
+    height: 100%;
+    background: rgba(27, 26, 25, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-content {
+    padding: 16px 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.main-content-solid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--mud-palette-background);
+    overflow: hidden;
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    background: var(--mud-palette-surface);
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+}
+
+.content-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+
+.electron-titlebar {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.titlebar-drag-region {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    -webkit-app-region: drag;
+}
+
+
+.sidebar-acrylic {
+    width: 250px;
+    height: 100%;
+    background: rgba(27, 26, 25, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.titlebar-title {
+    color: var(--mud-palette-text-primary);
+    font-weight: 600;
+}
+
+.window-controls {
+    display: flex;
+    height: 100%;
+    -webkit-app-region: no-drag;
+}
+
+.window-control-btn {
+    width: 46px;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: var(--mud-palette-text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s;
+}
+
+.window-control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.close-btn:hover {
+    background: #e81123;
+    color: white;
+}
+
+.window-control-btn:active {
+    opacity: 0.8;
 }

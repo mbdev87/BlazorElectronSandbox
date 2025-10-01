@@ -67,16 +67,55 @@ await app.StartAsync();
 
 var browserWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
 {
-        Width = 1152,
-        Height = 940,
-        WebPreferences = new WebPreferences
-        {
-                NodeIntegration = false,   // no Node globals polluting the DOM
-                ContextIsolation = true,   // sandbox, safer for preload bridging
-                WebSecurity = true,
-                Preload = Path.Join(Directory.GetCurrentDirectory(), "wwwroot", "electron-preload.js")
-        }
+                Width = 800,
+                Height = 600,
+                WebPreferences = new WebPreferences
+                {
+                                NodeIntegration = false,
+                                ContextIsolation = true,
+                                WebSecurity = true,
+                                Preload = Path.Join(Directory.GetCurrentDirectory(), "wwwroot", "electron-preload.js"),
+                                ExperimentalCanvasFeatures = true,
+                                Transparent = true
+                },
+                Transparent = true,
+                DarkTheme = true,
+                TitleBarStyle = TitleBarStyle.hidden,
+                Frame = false,
+                AutoHideMenuBar = true,
+                Center = true,
+
 });
+
+Electron.IpcMain.On("window-control", async (action) =>
+{
+    var command = action?.ToString();
+    switch (command)
+    {
+        case "minimize":
+            browserWindow.Minimize();
+            break;
+        case "maximize":
+            var isMaximized = await browserWindow.IsMaximizedAsync();
+            if (isMaximized == true)
+                browserWindow.Unmaximize();
+            else
+                browserWindow.Maximize();
+            break;
+        case "close":
+            browserWindow.Close();
+            break;
+    }
+});
+
+if (OperatingSystem.IsWindows())
+{
+    browserWindow.SetBackgroundMaterial(BackgroundMaterial.acrylic);
+}
+else if (OperatingSystem.IsMacOS())
+{
+    browserWindow.SetVibrancy(Vibrancy.underWindow);
+}
 
 browserWindow.LoadURL("http://localhost:5000");
 

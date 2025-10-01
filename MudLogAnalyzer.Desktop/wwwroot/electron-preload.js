@@ -29,3 +29,13 @@ window.process = {
 // Add other Node.js polyfills that might be needed
 window.global = window;
 window.Buffer = window.Buffer || {};
+
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('electronWindowControl', (action) => {
+    ipcRenderer.send('window-control', action);
+});
+
+window.electronWindowControl = (action) => {
+    ipcRenderer.send('window-control', action);
+};

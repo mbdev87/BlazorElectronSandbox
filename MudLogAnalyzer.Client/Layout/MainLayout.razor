@@ -1,4 +1,41 @@
 ﻿@inherits LayoutComponentBase
+@inject MudLogAnalyzer.Client.Services.IPlatformService PlatformService
+
+@if (PlatformService.IsElectron)
+{
+    <style>
+        body {
+            background: transparent !important;
+        }
+
+        .mud-layout {
+            background: transparent !important;
+        }
+
+        #nav-drawer.mud-drawer {
+            background: rgba(27, 26, 25, 0.8) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+        }
+
+        #nav-drawer .mud-drawer-content {
+            background-color: transparent !important;
+        }
+
+        .mud-main-content {
+            background: #11100f !important;
+            min-height: 100vh !important;
+        }
+
+        .mud-appbar {
+            background: #1b1a19 !important;
+        }
+
+        main, article, [role="main"] {
+            background: #11100f !important;
+        }
+    </style>
+}
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />

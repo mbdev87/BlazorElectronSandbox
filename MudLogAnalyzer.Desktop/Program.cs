@@ -11,6 +11,10 @@ builder.Services.AddElectron();
 // Add MudBlazor services
 builder.Services.AddMudServices();
 
+// Add platform detection service
+builder.Services.AddScoped<MudLogAnalyzer.Client.Services.IPlatformService>(sp =>
+    new MudLogAnalyzer.Client.Services.PlatformService { IsElectron = true });
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents()

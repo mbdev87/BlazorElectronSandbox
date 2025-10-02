@@ -10,6 +10,8 @@ I am testing [MudBlazor](https://github.com/MudBlazor/MudBlazor) SSR/WASM mixed 
 ### Main View
 ![Main View](docs/img/main_view1.png)
 
+![Theme switch](docs/img/main_view2.png)
+
 ### Appearance Settings
 ![Appearance Settings](docs/img/appearance1.png)
 

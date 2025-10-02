@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Community",
+  "classifications": [
+    "Web",
+    "Blazor",
+    "Desktop",
+    "MudBlazor",
+    "Electron"
+  ],
+  "identity": "MudBlazor.Electron.Template",
+  "name": "MudBlazor Electron App",
+  "shortName": "mudblazor-electron",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "MudLogAnalyzer",
+  "preferNameDirectory": true,
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The target framework for the project.",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "net10.0",
+          "description": "Target net10.0"
+        }
+      ],
+      "replaces": "net10.0",
+      "defaultValue": "net10.0"
+    },
+    "HostIdentifier": {
+      "type": "bind",
+      "binding": "HostIdentifier"
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**",
+            "**/.vs/**",
+            "**/.git/**",
+            "**/.vscode/**",
+            "**/.idea/**",
+            "**/node_modules/**",
+            "**/*.user",
+            "**/*.suo",
+            "**/CLAUDE.md",
+            "**/.template.config/**"
+          ]
+        }
+      ]
+    }
+  ],
+  "postActions": [
+    {
+      "condition": "(HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
+      "description": "Opens the project in the editor",
+      "manualInstructions": [],
+      "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
+      "args": {
+        "files": "0"
+      },
+      "continueOnError": true
+    }
+  ]
+}

@@ -12,4 +12,6 @@ var isElectron = builder.HostEnvironment.BaseAddress.StartsWith("http://localhos
 builder.Services.AddScoped<IPlatformService>(sp =>
     new PlatformService { IsElectron = isElectron });
 
+builder.Services.AddScoped<IThemeService, ThemeService>();
+
 await builder.Build().RunAsync();

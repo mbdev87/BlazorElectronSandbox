@@ -2,6 +2,7 @@
 using ElectronSharp.API;
 using ElectronSharp.API.Entities;
 using MudBlazor.Services;
+using MudLogAnalyzer.Client.Services;
 
 //var isMaximized = false;
 Electron.ReadAuth();
@@ -21,6 +22,7 @@ builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents()
         .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddScoped<IThemeService, ThemeService>();
 
 
 builder.WebHost.ConfigureKestrel((context, serverOptions) =>

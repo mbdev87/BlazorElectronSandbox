@@ -1,20 +1,29 @@
 ﻿@inherits LayoutComponentBase
 @inject MudLogAnalyzer.Client.Services.IPlatformService PlatformService
+@inject MudLogAnalyzer.Client.Services.IThemeService ThemeService
+@inject IJSRuntime JS
+@implements IDisposable
 
-@if (PlatformService.IsElectron)
-{
-    var drawerBg = "#1b1a19";
-    var mainContentBg = "#1b1a19";
-    var contentBg = _isDarkMode ? "#252423" : "#ffffff";
-    var appBarBg = "#1b1a19";
+@{
+    var contentPalette = (Palette)(_isDarkMode
+            ? _theme?.PaletteDark != null ? _theme.PaletteDark : _darkPalette
+            : _theme?.PaletteLight != null ? _theme.PaletteLight : _lightPalette);
+
+    var uxPalette = (PaletteDark)(_theme?.PaletteDark ?? _darkPalette);
+
+    var drawerBg = uxPalette?.DrawerBackground ?? "#1b1a19";
+    var mainContentBg = uxPalette?.DrawerBackground ?? "#1b1a19";
+    var contentBg = contentPalette?.Surface ?? (_isDarkMode ? "#252423" : "#ffffff");
+    var appBarBg = uxPalette?.AppbarBackground ?? "#1b1a19";
     var appBarText = "#ffffff";
     var drawerText = "#ffffff";
     var scrollbarThumb = _isDarkMode ? "#3b3a39" : "#c8c6c4";
     var scrollbarTrack = _isDarkMode ? "#201f1e" : "#edebe9";
+}
 
-    <style>
+<style>
         #nav-drawer.mud-drawer {
-            background: @drawerBg !important;
+            background: linear-gradient(165deg, @drawerBg 0%, @drawerBg 70%, #1b1a19 100%) !important;
         }
 
         .mud-navmenu {
@@ -74,7 +83,7 @@
         }
 
         .mud-appbar {
-            background: @appBarBg !important;
+            background: linear-gradient(to right, @appBarBg 0%, @appBarBg 50%, #1b1a19 85%) !important;
             -webkit-app-region: drag !important;
             color: @appBarText !important;
             height: 48px !important;
@@ -125,10 +134,23 @@
         main, article, [role="main"] {
             background: @mainContentBg !important;
         }
-    </style>
-}
 
-@inject IJSRuntime JS
+        @if (PlatformService.IsElectron)
+        {
+            <text>
+        .mud-appbar {
+            -webkit-app-region: drag !important;
+        }
+
+        .mud-appbar button,
+        .mud-appbar a,
+        .mud-appbar input,
+        .mud-appbar select {
+            -webkit-app-region: no-drag !important;
+        }
+            </text>
+        }
+    </style>
 
 
 @code {
@@ -220,16 +242,25 @@
     private bool _isDarkMode = true;
     private MudTheme? _theme = null;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
-        _theme = new()
-        {
-            PaletteLight = _lightPalette,
-            PaletteDark = _darkPalette,
-            LayoutProperties = new LayoutProperties()
-        };
+        await ThemeService.GetSettingsAsync();
+        _theme = ThemeService.GenerateTheme();
+
+        ThemeService.OnThemeChanged += OnThemeChanged;
+    }
+
+    private void OnThemeChanged()
+    {
+        _theme = ThemeService.GenerateTheme();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= OnThemeChanged;
     }
 
     private void DrawerToggle()

@@ -1,10 +1,13 @@
 ﻿@inject IJSRuntime JS
+@inject IDialogService DialogService
+@inject MudLogAnalyzer.Client.Services.IThemeService ThemeService
+@implements IDisposable
 
 <div style="display: flex; flex-direction: column; height: 100%;">
-    <div style="height: 48px; min-height: 48px; background: #1b1a19; display: flex; align-items: center; padding: 0 12px;">
+    <div style="height: 48px; min-height: 48px; background: @_searchBarBg; display: flex; align-items: center; padding: 0 12px;">
         <MudTextField @bind-Value="_searchText"
                       Placeholder="Search"
-                      Variant="Variant.Outlined"
+                      Variant="Variant.Filled"
                       Margin="Margin.Dense"
                       Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
@@ -20,8 +23,9 @@
         <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
     </MudNavMenu>
 
-    <div style="padding: 4px; border-top: 1px solid rgba(255, 255, 255, 0.12);">
+    <div style="padding: 4px; border-top: 1px solid rgba(255, 255, 255, 0.12); display: flex; gap: 4px;">
         <MudIconButton Icon="@(DarkLightModeButtonIcon)" Style="color: white;" OnClick="@DarkModeToggle" Size="Size.Small" />
+        <MudIconButton Icon="@Icons.Material.Filled.Palette" Style="color: white;" OnClick="@OpenAppearanceDialog" Size="Size.Small" />
     </div>
 </div>
 
@@ -55,9 +59,9 @@
         overflow: hidden !important;
     }
 
-    .nav-search-box .mud-input-outlined .mud-input-root {
+   /* .nav-search-box .mud-input-outlined .mud-input-root {
         background: rgba(255, 255, 255, 0.1);
-    }
+    }*/
 
     .nav-search-box .mud-input-outlined:hover .mud-input-root {
         background: rgba(255, 255, 255, 0.15);
@@ -91,12 +95,37 @@
 
 @code {
     private string _searchText = "";
+    private string _searchBarBg = "#1b1a19";
 
     [CascadingParameter]
     public bool IsDarkMode { get; set; }
 
     [Parameter]
     public EventCallback OnDarkModeToggle { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ThemeService.GetSettingsAsync();
+        UpdateSearchBarBackground();
+        ThemeService.OnThemeChanged += OnThemeChanged;
+    }
+
+    private void OnThemeChanged()
+    {
+        UpdateSearchBarBackground();
+        StateHasChanged();
+    }
+
+    private void UpdateSearchBarBackground()
+    {
+        var theme = ThemeService.GenerateTheme();
+        _searchBarBg = theme?.PaletteDark?.DrawerBackground?.ToString() ?? "#1b1a19";
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= OnThemeChanged;
+    }
 
     private async Task DarkModeToggle()
     {
@@ -108,6 +137,18 @@
         true => Icons.Material.Rounded.LightMode,
         false => Icons.Material.Outlined.DarkMode,
     };
+
+    private async Task OpenAppearanceDialog()
+    {
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<MudLogAnalyzer.Client.Components.Appearance>("Appearance", options);
+    }
 }
 
 

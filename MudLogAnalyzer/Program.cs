@@ -1,5 +1,6 @@
 using MudBlazor.Services;
 using MudLogAnalyzer.Client.Pages;
+using MudLogAnalyzer.Client.Services;
 using MudLogAnalyzer.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddMudServices();
 // Add platform detection service
 builder.Services.AddScoped<MudLogAnalyzer.Client.Services.IPlatformService>(sp =>
     new MudLogAnalyzer.Client.Services.PlatformService { IsElectron = false });
+builder.Services.AddScoped<IThemeService, ThemeService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

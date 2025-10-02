@@ -1,4 +1,4 @@
-# MudBlazor SSR/WASM with ElectronSharp
+# MudBlazor SSR/WASM with ElectronSharp on .NET 10
 
 I am testing [MudBlazor](https://github.com/MudBlazor/MudBlazor) SSR/WASM mixed with [ElectronSharp](https://github.com/theolivenbaum/electron-sharp) working both in the Browser and on the Desktop with .NET 10.
 
@@ -9,6 +9,8 @@ I am testing [MudBlazor](https://github.com/MudBlazor/MudBlazor) SSR/WASM mixed 
 
 ### Main View
 ![Main View](docs/img/main_view1.png)
+
+![Theme switch](docs/img/main_view2.png)
 
 ### Appearance Settings
 ![Appearance Settings](docs/img/appearance1.png)

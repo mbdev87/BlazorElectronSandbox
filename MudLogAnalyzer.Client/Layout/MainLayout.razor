@@ -1,0 +1,336 @@
+﻿@inherits LayoutComponentBase
+@inject MudLogAnalyzer.Client.Services.IPlatformService PlatformService
+@inject MudLogAnalyzer.Client.Services.IThemeService ThemeService
+@inject IJSRuntime JS
+@implements IDisposable
+
+@{
+    var contentPalette = (Palette)(_isDarkMode
+            ? _theme?.PaletteDark != null ? _theme.PaletteDark : _darkPalette
+            : _theme?.PaletteLight != null ? _theme.PaletteLight : _lightPalette);
+
+    var uxPalette = (PaletteDark)(_theme?.PaletteDark ?? _darkPalette);
+
+    var drawerBg = uxPalette?.DrawerBackground ?? "#1b1a19";
+    var mainContentBg = uxPalette?.DrawerBackground ?? "#1b1a19";
+    var contentBg = contentPalette?.Surface ?? (_isDarkMode ? "#252423" : "#ffffff");
+    var appBarBg = uxPalette?.AppbarBackground ?? "#1b1a19";
+    var appBarText = "#ffffff";
+    var drawerText = "#ffffff";
+    var scrollbarThumb = _isDarkMode ? "#3b3a39" : "#c8c6c4";
+    var scrollbarTrack = _isDarkMode ? "#201f1e" : "#edebe9";
+}
+
+<style>
+        #nav-drawer.mud-drawer {
+            background: linear-gradient(165deg, @drawerBg 0%, @drawerBg 70%, #1b1a19 100%) !important;
+        }
+
+        .mud-navmenu {
+            border-radius: 8px;
+            margin-top: 6px !important;
+        }
+
+        #nav-drawer .mud-navmenu .mud-nav-link,
+        #nav-drawer .mud-navmenu .mud-nav-link .mud-nav-link-text {
+            color: @drawerText !important;
+        }
+
+        #nav-drawer .mud-navmenu .mud-nav-link svg,
+        #nav-drawer .mud-navmenu .mud-nav-link .mud-icon-root {
+            color: @drawerText !important;
+        }
+
+        #nav-drawer .mud-navmenu .mud-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        #nav-drawer .mud-navmenu .mud-nav-link.active {
+            background-color: #252423 !important;
+        }
+
+        .mud-main-content {
+            background: #1b1a19 !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            padding: 54px 6px 4px 4px !important;
+        }
+
+        .content-container {
+            background: @contentBg !important;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+
+        *::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: @scrollbarTrack;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background: @scrollbarThumb;
+            border-radius: 6px;
+        }
+
+        *::-webkit-scrollbar-thumb:hover {
+            background: @(_isDarkMode ? "#605e5c" : "#a19f9d");
+        }
+
+        .mud-appbar {
+            background: linear-gradient(to right, @appBarBg 0%, @appBarBg 50%, #1b1a19 85%) !important;
+            -webkit-app-region: drag !important;
+            color: @appBarText !important;
+            height: 48px !important;
+            min-height: 48px !important;
+        }
+
+        .mud-appbar .mud-typography,
+        .mud-appbar .mud-icon-button {
+            color: @appBarText !important;
+        }
+
+        .mud-appbar button,
+        .mud-appbar a,
+        .mud-appbar input,
+        .mud-appbar select {
+            -webkit-app-region: no-drag !important;
+        }
+
+        .window-controls {
+            position: fixed;
+            top: 0;
+            right: 0;
+            margin: 12px;
+            z-index: 9999;
+            display: flex;
+            gap: 0;
+            -webkit-app-region: no-drag !important;
+        }
+
+        .window-controls button {
+            height: 12px;
+            width: 12px;
+            border-radius: 0;
+            margin-top: 2px;
+            margin-right: 2px;
+            margin-left: 12px;
+        }
+
+        .window-controls button:hover {
+            background-color: @(_isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)");
+        }
+
+        .window-controls button.close-btn:hover {
+            background-color: #c42b1c;
+            color: white;
+        }
+
+        main, article, [role="main"] {
+            background: @mainContentBg !important;
+        }
+
+        @if (PlatformService.IsElectron)
+        {
+            <text>
+        .mud-appbar {
+            -webkit-app-region: drag !important;
+        }
+
+        .mud-appbar button,
+        .mud-appbar a,
+        .mud-appbar input,
+        .mud-appbar select {
+            -webkit-app-region: no-drag !important;
+        }
+            </text>
+        }
+    </style>
+
+
+@code {
+    [Parameter] public string Title { get; set; } = "MudLogAnalyzer";
+
+    private async Task MinimizeWindow()
+    {
+        await JS.InvokeVoidAsync("electronWindowControl", "minimize");
+    }
+
+    private async Task MaximizeWindow()
+    {
+        await JS.InvokeVoidAsync("electronWindowControl", "maximize");
+    }
+
+    private async Task CloseWindow()
+    {
+        await JS.InvokeVoidAsync("electronWindowControl", "close");
+    }
+
+}
+
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+
+    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never"
+               Variant="DrawerVariant.Persistent" Elevation="2">
+        <CascadingValue Value="_isDarkMode">
+            <NavMenu OnDarkModeToggle="@DarkModeToggle"/>
+        </CascadingValue>
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                           OnClick="@((e) => DrawerToggle())"/>
+            <MudText Typo="Typo.h6" Class="ml-3">Application</MudText>
+            <MudSpacer/>
+        </MudAppBar>
+
+        <div class="content-container">
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
+
+@*@if (PlatformService.IsElectron)
+{
+    <div class="window-controls">
+        <MudIconButton OnClick="@MinimizeWindow" Icon="@Icons.Material.Outlined.Remove" Size="Size.Small" />
+        <MudIconButton OnClick="@MaximizeWindow" Icon="@Icons.Material.Outlined.CropSquare" Size="Size.Small"/>
+        <MudIconButton OnClick="@CloseWindow" Icon="@Icons.Material.Outlined.Close" Class="close-btn" Size="Size.Small"/>
+    </div>    
+}*@
+
+@*<div class="electron-layout">
+    <div class="sidebar-acrylic">
+        <div class="sidebar-content">
+            <NavMenu />
+        </div>
+    </div>
+    <div class="main-content-solid">
+        <ElectronTitleBar Title="MudLogAnalyzer" />
+        <MudPaper Elevation="0" Class="content-header">
+            <MudText Typo="Typo.h5">Application</MudText>
+            <MudSpacer/>
+            <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle"/>
+        </MudPaper>
+        <div class="content-body">
+            @Body
+        </div>
+    </div>
+</div>*@
+
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    private bool _drawerOpen = true;
+    private bool _isDarkMode = true;
+    private MudTheme? _theme = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await ThemeService.GetSettingsAsync();
+        _theme = ThemeService.GenerateTheme();
+
+        ThemeService.OnThemeChanged += OnThemeChanged;
+    }
+
+    private void OnThemeChanged()
+    {
+        _theme = ThemeService.GenerateTheme();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= OnThemeChanged;
+    }
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+        StateHasChanged();
+    }
+
+    private readonly PaletteLight _lightPalette = new()
+    {
+        Primary = "#0078d4", // Fluent / Office Blue
+        Secondary = "#2b88d8",
+        Black = "#201f1e",
+        AppbarText = "#323130",
+        AppbarBackground = "#ffffff",
+        DrawerBackground = "#ffffff",
+        Background = "#f3f2f1", // Fluent neutral light
+        Surface = "#ffffff",
+        TextPrimary = "#201f1e",
+        TextSecondary = "#605e5c",
+        GrayLight = "#edebe9",
+        GrayLighter = "#faf9f8",
+        Info = "#0178d4",
+        Success = "#107c10",
+        Warning = "#ffb900",
+        Error = "#d13438",
+    };
+
+    private readonly PaletteDark _darkPalette = new()
+    {
+        Primary = "#2899f5", // Lighter blue for dark mode
+        Secondary = "#3aa0f3",
+        Surface = "#1b1a19",
+        Background = "#11100f",
+        BackgroundGray = "#201f1e",
+        AppbarText = "#f3f2f1",
+        AppbarBackground = "#1b1a19",
+        DrawerBackground = "#1b1a19",
+        ActionDefault = "#a19f9d",
+        ActionDisabled = "#8a88864d",
+        ActionDisabledBackground = "#3231304d",
+        TextPrimary = "#ffffff",
+        TextSecondary = "#d2d0ce",
+        TextDisabled = "#ffffff66",
+        DrawerIcon = "#d2d0ce",
+        DrawerText = "#d2d0ce",
+        GrayLight = "#323130",
+        GrayLighter = "#252423",
+        Info = "#2899f5",
+        Success = "#107c10",
+        Warning = "#fce100",
+        Error = "#d13438",
+        LinesDefault = "#3b3a39",
+        TableLines = "#3b3a39",
+        Divider = "#323130",
+        OverlayLight = "#201f1e80",
+    };
+
+
+    public string DarkLightModeButtonIcon => _isDarkMode switch
+    {
+        true => Icons.Material.Rounded.AutoMode,
+        false => Icons.Material.Outlined.DarkMode,
+    };
+
+}
+
+

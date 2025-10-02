@@ -1,0 +1,94 @@
+﻿@page "/weather"
+
+<PageTitle>Weather</PageTitle>
+
+<div class="weather-container">
+    <div class="weather-header">
+        <MudText Typo="Typo.h3" GutterBottom="true" Style="word-break: break-word;">Weather forecast</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4" Style="word-break: break-word;">This component demonstrates fetching data from the server. Total forecasts: @(forecasts?.Length.ToString("N0") ?? "Loading...")</MudText>
+    </div>
+
+    @if (forecasts == null)
+    {
+        <MudProgressCircular Color="Color.Default" Indeterminate="true"/>
+    }
+    else
+    {
+        <div class="weather-table-container">
+            <MudTable Items="forecasts"
+                      Hover="false"
+                      Virtualize="true"
+                      FixedHeader="true"
+                      Height="100%"
+                      Dense="true">
+                <HeaderContent>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Date</MudTh>
+                    <MudTh>Temp. (C)</MudTh>
+                    <MudTh>Temp. (F)</MudTh>
+                    <MudTh>Summary</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="ID">@context.Id</MudTd>
+                    <MudTd DataLabel="Date">@context.Date</MudTd>
+                    <MudTd DataLabel="Temp. (C)">@context.TemperatureC</MudTd>
+                    <MudTd DataLabel="Temp. (F)">@context.TemperatureF</MudTd>
+                    <MudTd DataLabel="Summary">@context.Summary</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </div>
+    }
+</div>
+
+<style>
+    .weather-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .weather-header {
+        flex-shrink: 0;
+    }
+
+    .weather-table-container {
+        flex: 1;
+        min-height: 0;
+    }
+</style>
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+
+        var startDate = DateOnly.FromDateTime(DateTime.Now);
+        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+
+        forecasts = new WeatherForecast[200_000];
+        for (int i = 0; i < forecasts.Length; i++)
+        {
+            var tempC = Random.Shared.Next(-20, 55);
+            forecasts[i] = new WeatherForecast
+            {
+                Id = i + 1,
+                Date = startDate.AddDays(i + 1),
+                TemperatureC = tempC,
+                TemperatureF = 32 + (int)(tempC / 0.5556),
+                Summary = summaries[Random.Shared.Next(summaries.Length)]
+            };
+        }
+    }
+
+    private sealed class WeatherForecast
+    {
+        public int Id { get; set; }
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public int TemperatureF { get; set; }
+        public string? Summary { get; set; }
+    }
+
+}

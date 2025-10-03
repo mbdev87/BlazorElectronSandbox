@@ -1,11 +1,12 @@
 ﻿@page "/weather"
+@implements IDisposable
 
 <PageTitle>Weather</PageTitle>
 
 <div class="weather-container">
     <div class="weather-header">
         <MudText Typo="Typo.h3" GutterBottom="true" Style="word-break: break-word;">Weather forecast</MudText>
-        <MudText Typo="Typo.body1" Class="mb-4" Style="word-break: break-word;">This component demonstrates fetching data from the server. Total forecasts: @(forecasts?.Length.ToString("N0") ?? "Loading...")</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4" Style="word-break: break-word;">This component demonstrates fetching data from the server. Total forecasts: @(forecasts?.Length.ToString("N0") ?? "Loading...") | Showing: @(filteredForecasts?.Count().ToString("N0") ?? "0")</MudText>
     </div>
 
     @if (forecasts == null)
@@ -14,8 +15,27 @@
     }
     else
     {
+        <div class="search-bar mb-3">
+            <MudTextField Value="@searchString"
+                          ValueChanged="@((string value) => OnSearchChanged(value))"
+                          Placeholder="Search across all fields..."
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          Clearable="true"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Disabled="@isFiltering"/>
+        </div>
         <div class="weather-table-container">
-            <MudTable Items="forecasts"
+            @if (isFiltering)
+            {
+                <div class="filtering-overlay">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+                    <MudText Typo="Typo.body2" Class="ml-2">Filtering...</MudText>
+                </div>
+            }
+            <MudTable Items="filteredForecasts"
                       Hover="false"
                       Virtualize="true"
                       FixedHeader="true"
@@ -61,10 +81,24 @@
     .weather-table-container .mud-table {
         height: 100%;
     }
+
+    .filtering-overlay {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
 </style>
 
 @code {
     private WeatherForecast[]? forecasts;
+    private List<WeatherForecast> filteredForecasts = new();
+    private string searchString = string.Empty;
+    private bool isFiltering = false;
+    private CancellationTokenSource? debounceTokenSource;
+    private const int DebounceMilliseconds = 300;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,6 +120,69 @@
                 Summary = summaries[Random.Shared.Next(summaries.Length)]
             };
         }
+
+        filteredForecasts = forecasts.ToList();
+    }
+
+    private async Task OnSearchChanged(string value)
+    {
+        searchString = value;
+
+        debounceTokenSource?.Cancel();
+        debounceTokenSource = new CancellationTokenSource();
+        var token = debounceTokenSource.Token;
+
+        try
+        {
+            await Task.Delay(DebounceMilliseconds, token);
+            await FilterDataAsync(token);
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
+
+    private async Task FilterDataAsync(CancellationToken cancellationToken)
+    {
+        if (forecasts == null) return;
+
+        isFiltering = true;
+        StateHasChanged();
+
+        try
+        {
+            var results = await Task.Run(() =>
+            {
+                if (string.IsNullOrWhiteSpace(searchString))
+                {
+                    return forecasts.ToList();
+                }
+
+                return forecasts.Where(f =>
+                    f.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    f.Date.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    f.TemperatureC.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    f.TemperatureF.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    (f.Summary?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false)
+                ).ToList();
+            }, cancellationToken);
+
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                filteredForecasts = results;
+            }
+        }
+        finally
+        {
+            isFiltering = false;
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        debounceTokenSource?.Cancel();
+        debounceTokenSource?.Dispose();
     }
 
     private sealed class WeatherForecast
